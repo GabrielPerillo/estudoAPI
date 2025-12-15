@@ -10,26 +10,26 @@
 # 4. Quais recursos/funcionalidades queremos disponibilizar - Livros  
 
 from flask import Flask, jsonify, request 
-from flask_restx import Api, Resource
+#from flask_restx import Api, Resource
 
 # Flask - servidor 
 # jsonify - o que nos permite retornar no formato .json, formato esperado de uma API
 # request - que nos permite acessar os dados que estão indo/vindo das nossas requsições 
 
 app = Flask(__name__)  # criando aplicação flask com nome do arquivo atual 
-api = Api(
-    app,
-    title="Minha API",
-    version="1.0",
-    description="API documentada com Swagger"
-)
+# api = Api(
+#     app,
+#     title="Biblioteca de Livros",
+#     version="1.0",
+#     description="API documentada com Swagger"
+# )
 
-ns = api.namespace("health", description="Health check")
+# ns = api.namespace("health", description="Health check")
 
-@ns.route("/")
-class Health(Resource):
-    def get(self):
-        return {"status": "ok"}
+# @ns.route("/")
+# class Health(Resource):
+#     def get(self):
+#         return {"status": "ok"}
 
 # Agora precisamos de uma fonte de dados 
 
@@ -58,21 +58,9 @@ livros = [      # lista
 # para ser cosniderado uma API, é preciso decorá-la com 
 @app.route('/livros',methods=['GET']) 
 
-
-
-
-ns = api.namespace("health", description="Health check")
-
-@ns.route("/")
-class Health(Resource):
-    def get(self):
-        return {"status": "ok"}
-    
-
 # Consultar (todos)
 def obterLivros():
     return jsonify(livros)
-
 
 
 @app.route('/livros/<int:id>',methods=['GET']) 
@@ -103,6 +91,19 @@ def cadastrarLivro():
     livros.append(novo_livro)
 
     return jsonify(livros)
+
+
+# Excluir 
+
+@app.route('/livros/<int:id>',methods=['DELETE'])
+def excluir_livro(id):
+    for indice, livro in enumerate(livros):
+        if livro.get('id') == id:
+            del livros[indice]
+        
+    return jsonify(livros) 
+
+
 
 # agora vamos inicializar essa aplicação 
 app.run(port=5000,host='localhost',debug=True) 
